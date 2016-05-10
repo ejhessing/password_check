@@ -5,8 +5,21 @@ var $confirm_password = $('#confirm_password');
 // Hide hints 
 $("form span").hide();
 
+function isPasswordValid() {
+	return $password.val().length > 8;
+}
+
+function arePasswordsMatching (){
+	return $password.val() === $confirm_password.val();
+}
+
+function canSubmit(){
+	//check if passwords are valid and they match
+	return isPasswordValid() && arePasswordsMatching();
+}
+
 function passwordEvent () {
-	if($password.val().length > 8){
+	if(isPasswordValid()){
 		//hide hint if valid
 		$password.next().hide();
 	} else {
@@ -18,7 +31,7 @@ function passwordEvent () {
 
 function confirmPasswordEvent(){
 	//find out if password and confirmation match
-	if($password.val() === $confirm_password.val()){
+	if(arePasswordsMatching()){
 		//hide hint if match
 		$confirm_password.next().hide();
 
@@ -28,14 +41,17 @@ function confirmPasswordEvent(){
 	}	
 }
 
+function enableSumbitEvent() {
+	$('#submit').prop("disabled", !canSubmit());
+}
 
 
 //when event happens on password input
 // find out if password is valid
-$password.focus(passwordEvent).keyup(passwordEvent).focus(confirmPasswordEvent).keyup(confirmPasswordEvent);
-	
-	
+$password.focus(passwordEvent).keyup(passwordEvent).keyup(confirmPasswordEvent).keyup(enableSumbitEvent);
 		
 
 // when event happens on confirmation
-$confirm_password.focus(confirmPasswordEvent).keyup(confirmPasswordEvent);
+$confirm_password.focus(confirmPasswordEvent).keyup(confirmPasswordEvent).keyup(enableSumbitEvent);
+
+enableSumbitEvent();
